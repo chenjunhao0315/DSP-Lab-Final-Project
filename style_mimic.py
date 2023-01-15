@@ -12,6 +12,10 @@ def parse_arguments():
     parser.add_argument('--img2')
     parser.add_argument('--dist', default=False)
     parser.add_argument('--save', default='out.jpg')
+    parser.add_argument('--s1', default=0.5)
+    parser.add_argument('--s2', default=0.1)
+    parser.add_argument('--s3', default=0.4)
+    parser.add_argument('--n', default=4)
 
     return parser.parse_args()
 
@@ -25,7 +29,7 @@ def quantize(img, num):
 
     return img_quant, rgb_cols
 
-def merge(path, base, test_path, n, dist, out_path):
+def merge(path, base, test_path, n, dist, out_path, s1, s2, s3):
     img_org = cv2.imread(path)
     img_org = cv2.cvtColor(img_org, cv2.COLOR_BGR2RGB)
     img = img_org.copy()
@@ -40,11 +44,11 @@ def merge(path, base, test_path, n, dist, out_path):
     for h in range(img.shape[0]):
         for w in range(img.shape[1]):
             if (img_lab[h][w][0] < 10):
-                offset[h][w] = base[level[h][w]] * 0.5  # 0.2 / 0.5 / x / 0.4 / 0.4     ## scale1
+                offset[h][w] = base[level[h][w]] * s1  # 0.2 / 0.5 / x / 0.4 / 0.4     ## scale1
             elif (img_lab[h][w][0] > 90):
-                offset[h][w] = base[level[h][w]] * 0.1  # 1 / 0.1 / x / 1.2 / 0.2       ## scale2
+                offset[h][w] = base[level[h][w]] * s2  # 1 / 0.1 / x / 1.2 / 0.2       ## scale2
             else:
-                offset[h][w] = base[level[h][w]] * 0.4  # 1 / 0.4 / x / 1.2 / 0.7       ## scale3
+                offset[h][w] = base[level[h][w]] * s3  # 1 / 0.4 / x / 1.2 / 0.7       ## scale3
 
     img_lab[:, :, 0] = np.clip(img_lab[:, :, 0], 0, 100)
     img_lab[:, :, 1] = np.clip(img_lab[:, :, 1], -127, 128)
@@ -106,10 +110,10 @@ def extract(path1, path2, n):
 def main():
     rt_args = parse_arguments()
 
-    n = 4   # 4 / 7 / x / 4 / 4
+    n = int(rt_args.n)   # 4 / 7 / x / 4 / 4
 
     base = extract(rt_args.img1, rt_args.img2, n)
-    merge(rt_args.img, base, rt_args.img2, n, rt_args.dist, rt_args.save)
+    merge(rt_args.img, base, rt_args.img2, n, rt_args.dist, rt_args.save, float(rt_args.s1), float(rt_args.s2), float(rt_args.s3))
 
     return
 
