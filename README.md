@@ -17,6 +17,7 @@ Quick Start
 6. `s3`: 灰部參數
 7. `n`: 量化參數
 8. `save`: 風格模仿存檔名
+9. `dist`: 模仿效果驗證
 
 # Library
 `cv2`, `scikit-image`
