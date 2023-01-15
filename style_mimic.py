@@ -76,11 +76,11 @@ def merge(path, base, test_path, n, dist, out_path, s1, s2, s3):
     plt.imshow(img_org)
     plt.subplot(132)
     plt.title("Image2")
-    plt.imshow(img)
-    plt.imsave(out_path, img)
+    plt.imshow(test_img)
     plt.subplot(133)
     plt.title("Image3")
-    plt.imshow(test_img)
+    plt.imshow(img)
+    plt.imsave(out_path, img)
     plt.show()
 
 def extract(path1, path2, n):
