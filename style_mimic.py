@@ -29,10 +29,12 @@ def quantize(img, num):
 
     return img_quant, rgb_cols
 
-def merge(path, base, test_path, n, dist, out_path, s1, s2, s3):
+def merge(path, base, test_path, n, dist, out_path, s1, s2, s3, img1_path):
     img_org = cv2.imread(path)
     img_org = cv2.cvtColor(img_org, cv2.COLOR_BGR2RGB)
     img = img_org.copy()
+    img1 = cv2.imread(img1_path)
+    img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2RGB)
 
     img_lab = skimage.color.rgb2lab(img)
     lab_dist = np.linalg.norm(img_lab, axis=-1)
@@ -71,13 +73,16 @@ def merge(path, base, test_path, n, dist, out_path, s1, s2, s3):
         print(dist1)
         print(dist2)
 
-    plt.subplot(131)
+    plt.subplot(221)
     plt.title("Image1")
-    plt.imshow(img_org)
-    plt.subplot(132)
+    plt.imshow(img1)
+    plt.subplot(222)
     plt.title("Image2")
     plt.imshow(test_img)
-    plt.subplot(133)
+    plt.subplot(223)
+    plt.title("Image")
+    plt.imshow(img_org)
+    plt.subplot(224)
     plt.title("Image3")
     plt.imshow(img)
     plt.imsave(out_path, img)
@@ -113,7 +118,9 @@ def main():
     n = int(rt_args.n) ## quantize number
 
     base = extract(rt_args.img1, rt_args.img2, n)
-    merge(rt_args.img, base, rt_args.img2, n, rt_args.dist, rt_args.save, float(rt_args.s1), float(rt_args.s2), float(rt_args.s3))
+    merge(rt_args.img, base, rt_args.img2, n, rt_args.dist, rt_args.save, float(rt_args.s1), float(rt_args.s2), float(rt_args.s3), rt_args.img1)
+
+
 
     return
 
